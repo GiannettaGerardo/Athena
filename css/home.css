@@ -1,0 +1,69 @@
+.home-body {
+    height: 100%;
+    width: 100%;
+
+    background-image: url('../img/nist-graph.png');
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: contain;
+}
+
+.home-menu {
+    border: solid 2px rgb(54, 162, 235);
+    border-radius: 7px;
+    padding: 10px 20px 10px 20px;
+    margin: 50px 0 0 50px;
+    background-color: rgba(54, 162, 235, 0.8);
+    width: 100%;
+    max-width: 300px;
+}
+
+.card {
+    width: 100%;
+    font-size: 15px;
+    border: solid 2px rgb(255, 99, 132);
+    border-radius: 7px;
+    padding: 10px 0 10px 0;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.card-title {
+    font-weight: 700;
+    width: 100%;
+    font-size: 15px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.card:hover {
+    background-color: rgb(218, 218, 218);
+}
+
+#table {
+    visibility: hidden;
+    border-collapse: collapse;
+    border: solid 2px rgb(54, 162, 235);
+    width: 100%;
+    max-width: 700px;
+    margin: 40px 0 0 50px;
+}
+#table td, #table th {
+    padding: 8px;
+}
+#table tr:nth-child(even){background-color: #f2f2f2;}
+#table tr:hover {background-color: #ddd;}
+#table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(54, 162, 235);
+    color: white;
+}
+
+tr > td {
+    max-width: 120px;
+    overflow-x: auto;
+    scrollbar-color: rgb(255, 99, 132) rgba(255, 99, 132, 0.2);
+    scrollbar-width: thin;
+}
