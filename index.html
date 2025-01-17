@@ -11,7 +11,7 @@
 <body class="home-body">
     <nav id="navbar">
         <span><span id="title">ATHENA</span>&nbsp; Compliance Calculator</span>
-        <button class="context-btn">Context</button>
+        <button id="context-btn" class="context-btn">Context</button>
     </nav>
 
     <div style="margin-bottom: 70px"></div>
@@ -20,6 +20,9 @@
         <div class="card-title">Menu</div>
         <button id="new" class="card" style="margin-bottom: 10px">New assessment</button>
         <button id="load" class="card" style="margin-bottom: 10px">Load assessment</button>
+        <label style="font-size: 14px" for="data-file">Load a previous saved context</label>
+        <input type="file" id="data-file" accept="application/json" />
+        <div id="msg-error">Error. Invalid context file.</div>
     </div>
 
     <table id="table"></table>

@@ -6,6 +6,31 @@ class Storage {
         this.surveys = JSON.parse(localStorage.getItem('surveys'));
     }
 
+    init(stringData) {
+        if (!stringData) return false;
+        const objData = JSON.parse(stringData);
+        if (this.#isValid(objData)) {
+            this.contextId = objData.contextId;
+            this.sessions = objData.sessions;
+            this.surveys = objData.surveys;
+            this.saveState();
+            return true;
+        }
+        return false;
+    }
+
+    #isValid(data) {
+        if (!data?.contextId) {
+            return false;
+        }
+
+        if (data.sessions && !Array.isArray(data.sessions)) {
+            return false;
+        }
+
+        return !data.surveys || Array.isArray(data.surveys);
+    }
+
     saveState() {
         if (this.contextId) {
             localStorage.setItem('contextId', this.contextId);

@@ -5,7 +5,21 @@
     background-image: url('../img/nist-graph.png');
     background-repeat: no-repeat;
     background-position: right;
-    background-size: contain;
+    background-size: 800px;
+}
+
+@media screen and (max-width: 9000px) and (max-height: 800px) {
+    .home-body {
+        background-size: contain;
+    }
+}
+
+#msg-error {
+    display: none;
+    margin-top: 10px;
+    color: rgb(165, 0, 0);
+    font-weight: 500;
+    font-size: large;
 }
 
 .home-menu {
@@ -51,6 +65,7 @@
 #table td, #table th {
     padding: 8px;
 }
+#table tr {background-color: #ffffff;}
 #table tr:nth-child(even){background-color: #f2f2f2;}
 #table tr:hover {background-color: #ddd;}
 #table th {

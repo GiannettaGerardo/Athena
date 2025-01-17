@@ -1,6 +1,9 @@
 import { STORAGE } from './store.js';
  
+const contextBtn = document.getElementById('context-btn');
+const errorDiv = document.getElementById('msg-error');
 const table = document.getElementById('table');
+const inputFile = document.getElementById('data-file');
 const newBtn = {
     btn: document.getElementById('new'),
     isClicked: false,
@@ -11,15 +14,11 @@ const loadBtn = {
     btn: document.getElementById('load'),
     isClicked: false,
     tableHeader: createTableHeader('Assessment', 'Survey', 'Status', 'Timestamp'),
-    data: [//STORAGE.sessions
-        { id: 'Alfreds Futterkiste', survey: 'CIS Controls v8', status: 'Survey', timestamp: '15/01/2025, 22:44:06'},
-        { id: 'Centro_comercial_Moctezuma_evervtvt_btebe_bte_b', survey: 'NIST', status: 'Dashboard', timestamp: '15/01/2025, 22:44:06'},
-        { id: 'Laughing Bacchus Winecellars wrvrvrv tev te betbet f', survey: 'CIS Controls v8', status: 'Survey', timestamp: '15/01/2025, 22:44:06'},
-        { id: 'Alfreds Futterkiste 2', survey: 'CIS Controls v8', status: 'Survey', timestamp: '15/01/2025, 22:44:06'},
-    ]
+    data: STORAGE.sessions
 }
 const buttons = [newBtn, loadBtn];
 
+inputFile.addEventListener('change', fileUpload);
 newBtn.btn.addEventListener('click', () => { clickButton(newBtn) });
 loadBtn.btn.addEventListener('click', () => { clickButton(loadBtn) });
 
@@ -44,6 +43,22 @@ function clickButton(btn) {
             clearAndHideTable();
             fillAndShowTable(btn.tableHeader, btn.data);
         }
+    }
+}
+
+function fileUpload(ev) {
+    resetFileUploadError();
+    const file = ev.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev2) => {
+            if (STORAGE.init(ev2.target.result)) {
+                contextBtn.innerText = STORAGE.contextId;
+            } else {
+                showFileUploadError();
+            }
+        }
+        reader.readAsText(file);
     }
 }
 
@@ -120,4 +135,12 @@ function fillAndShowTable(headerHtmlNode, dataList) {
         }
         table.appendChild(tr);
     }
+}
+
+function showFileUploadError() {
+    errorDiv.style.display = 'block';
+}
+
+function resetFileUploadError() {
+    errorDiv.style.display = 'none';
 }
