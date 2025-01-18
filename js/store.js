@@ -50,4 +50,12 @@ class Storage {
     }
 }
 
+export const SESSION = {
+    id: '',
+    surveys: [],
+    status: '',
+    creation: '',
+    lastUpdate: ''
+};
+
 export const STORAGE = new Storage();
