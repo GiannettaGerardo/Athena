@@ -25,6 +25,10 @@ setContextBtn();
 inputFile.addEventListener('change', fileUpload);
 newBtn.btn.addEventListener('click', () => { clickButton(newBtn) });
 loadBtn.btn.addEventListener('click', () => { clickButton(loadBtn) });
+startBtn.addEventListener('click', () => { 
+    const _table = newBtn.isClicked ? newBtn.table : loadBtn.table;
+    _table.handleStartBtn();
+});
 
 function clickButton(btn) {
     resetMenu();

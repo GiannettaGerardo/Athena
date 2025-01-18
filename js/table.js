@@ -108,6 +108,10 @@ class HomeTable extends AbstractTableCheckbox {
         this.startBtn.style.visibility = 'hidden';
         this.table.style.visibility = 'hidden';
     }
+
+    handleStartBtn() {
+        throw new Error("handleStartBtn is an abstract method and cannot be called");
+    }
 }
 
 export class NewAssessmentTable extends HomeTable {
@@ -120,6 +124,12 @@ export class NewAssessmentTable extends HomeTable {
         input.addEventListener('click', ev => this.handleHeaderCheckboxClick(ev));
         th.appendChild(input);
         this.header.insertBefore(th, this.header.firstChild);
+    }
+
+    // @Override
+    fillTable(dataList) {
+        super.fillTable(dataList);
+        this.header.childNodes[0].childNodes[0].checked = false;
     }
 
     // @Override
@@ -165,7 +175,7 @@ export class NewAssessmentTable extends HomeTable {
         } else {
             SESSION.surveys = []
         }
-        this.#handleStartBtn();
+        this.#manageStartBtn();
     }
 
     // @Override
@@ -174,7 +184,7 @@ export class NewAssessmentTable extends HomeTable {
             this.table.childNodes[0].childNodes[0].childNodes[0].checked = false;
         }
         this.#handleSurveyByCheckbox(ev.target);
-        this.#handleStartBtn();
+        this.#manageStartBtn();
     }
 
     #handleSurveyByCheckbox(checkbox) {
@@ -194,12 +204,17 @@ export class NewAssessmentTable extends HomeTable {
         }
     }
 
-    #handleStartBtn() {
+    #manageStartBtn() {
         if (SESSION.surveys.length === 0) {
             disableBtn(this.startBtn);
         } else {
             enableBtn(this.startBtn);
         }
+    }
+
+    // @Override
+    handleStartBtn() {
+        console.log(SESSION.surveys);
     }
 }
 
@@ -234,5 +249,18 @@ export class LoadAssessmentTable extends HomeTable {
         } else {
             disableBtn(this.startBtn);
         }
+    }
+
+    // @Override
+    handleStartBtn() {
+        const nodes = this.table.childNodes;
+        const size = nodes.length;
+        for (let i = 1; i < size; ++i) {
+            if (nodes[i].childNodes[0].childNodes[0].checked) {
+                console.log(STORAGE.sessions[i-1])
+                return STORAGE.sessions[i-1]; 
+            }
+        }
+        return null;
     }
 }
