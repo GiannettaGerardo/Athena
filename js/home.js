@@ -1,3 +1,4 @@
+import { CONFIG } from './config.js';
 import { STORAGE, SESSION } from './store.js';
 import { disableBtn } from './utils.js';
 import { NewAssessmentTable, LoadAssessmentTable } from './table.js';
@@ -27,7 +28,9 @@ newBtn.btn.addEventListener('click', () => { clickButton(newBtn) });
 loadBtn.btn.addEventListener('click', () => { clickButton(loadBtn) });
 startBtn.addEventListener('click', () => { 
     const _table = newBtn.isClicked ? newBtn.table : loadBtn.table;
-    _table.handleStartBtn();
+    if (_table.handleStartBtn()) {
+        window.location.href = CONFIG.surveyURL;
+    }
 });
 
 function clickButton(btn) {
@@ -86,7 +89,8 @@ function resetFileUploadError() {
 
 function resetMenu() {
     disableBtn(startBtn);
-    if (SESSION.surveys.length > 0) {
-        SESSION.surveys = [];
+    const surveys = SESSION.getSurveys();
+    if (surveys.length > 0) {
+        SESSION.setSurveys(new Array());
     }
 }

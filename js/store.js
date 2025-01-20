@@ -50,12 +50,54 @@ class Storage {
     }
 }
 
-export const SESSION = {
-    id: '',
-    surveys: [],
-    status: '',
-    creation: '',
-    lastUpdate: ''
-};
+class Session {
+    #id;
+    #surveys;
+    #status;
+    #creation;
+    #lastUpdate;
+
+    constructor() {
+        const surveys = JSON.parse(sessionStorage.getItem('surveys'));
+
+        this.#id = sessionStorage.getItem('id');
+        this.#surveys = (surveys && Array.isArray(surveys)) ? surveys : new Array();
+        this.#status = sessionStorage.getItem('status');
+        this.#creation = sessionStorage.getItem('creation');
+        this.#lastUpdate = sessionStorage.getItem('lastUpdate');
+    }
+
+    getId() { return this.#id }
+    getSurveys() { return this.#surveys }
+    getStatus() { return this.#status }
+    getCreation() { return this.#creation }
+    getLastUpdate() { return this.#lastUpdate }
+
+    setId(id) {
+        this.#id = id;
+        sessionStorage.setItem('id', id);
+    }
+
+    setSurveys(surveys) {
+        this.#surveys = surveys;
+        sessionStorage.setItem('surveys', JSON.stringify(surveys));
+    }
+
+    setStatus(status) {
+        this.#status = status;
+        sessionStorage.setItem('status', status);
+    }
+
+    setCreation(creation) {
+        this.#creation = creation;
+        sessionStorage.setItem('creation', creation);
+    }
+
+    setLastUpdate(lastUpdate) {
+        this.#lastUpdate = lastUpdate;
+        sessionStorage.setItem('lastUpdate', lastUpdate);
+    }
+}
 
 export const STORAGE = new Storage();
+export const SESSION = new Session();

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATHENA</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/survey.css">
+    <script type="module" src="js/survey.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <nav id="navbar">
+        <span><span id="title">ATHENA</span>&nbsp; Compliance Calculator</span>
+        <button id="context-btn" class="context-btn">Context</button>
+    </nav>
+    <ul class="my-breadcrumb">
+        <button id="back" onclick="history.back()"><i class="material-icons" style="font-size: 18px">arrow_back</i></button>
+        <li><a href="/">Home</a></li>
+        <li>Survey</li>
+    </ul>
+
+    <div class="main-input">
+        <div style="width: 250px">
+            <label for="session-id">Session ID</label>
+            <input type="text" id="session-id" placeholder="enter new session id...">
+        </div>
+
+        <div style="width: 180px">
+            <label for="creation-input">Creation</label>
+            <input type="text" id="creation-input" value="12/07/2023, 17:09:10" disabled>
+        </div>
+
+        <div style="width: 180px">
+            <label for="lastupdate-input">Last Update</label>
+            <input type="text" id="lastupdate-input" value="12/07/2023, 17:09:10" disabled>
+        </div>
+    </div>
+    
+</body>
+</html>

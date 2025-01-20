@@ -165,15 +165,17 @@ export class NewAssessmentTable extends HomeTable {
             checkbox.checked = checkValue;
         }
         if (checkValue) {
-            if (SESSION.surveys.length > 0) { 
-                SESSION.surveys = new Array(STORAGE.surveys.length); 
+            let surveys = SESSION.getSurveys();
+            if (surveys.length > 0) { 
+                surveys = new Array(STORAGE.surveys.length); 
             }
             let i = 0;
             for (const survey of STORAGE.surveys) {
-                SESSION.surveys[i++] = survey.id;
+                surveys[i++] = survey.id;
             }
+            SESSION.setSurveys(surveys);
         } else {
-            SESSION.surveys = []
+            SESSION.setSurveys(new Array());
         }
         this.#manageStartBtn();
     }
@@ -192,20 +194,22 @@ export class NewAssessmentTable extends HomeTable {
         for (let i = 0; i < size; ++i) {
             if (this.table.childNodes[i].childNodes[0].childNodes[0] === checkbox) {
                 const id = STORAGE.surveys[i-1].id;
+                let surveys = SESSION.getSurveys();
                 if (!checkbox.checked) {
                     // remove session survey
-                    SESSION.surveys = SESSION.surveys.filter(s => s !== id);
+                    surveys = surveys.filter(s => s !== id);
                 } else {
                     // add session survey
-                    SESSION.surveys.push(id);
+                    surveys.push(id);
                 }
+                SESSION.setSurveys(surveys);
                 break;
             }
         }
     }
 
     #manageStartBtn() {
-        if (SESSION.surveys.length === 0) {
+        if (SESSION.getSurveys().length === 0) {
             disableBtn(this.startBtn);
         } else {
             enableBtn(this.startBtn);
@@ -214,7 +218,8 @@ export class NewAssessmentTable extends HomeTable {
 
     // @Override
     handleStartBtn() {
-        console.log(SESSION.surveys);
+        console.log(SESSION.getSurveys());
+        return true;
     }
 }
 
@@ -255,12 +260,15 @@ export class LoadAssessmentTable extends HomeTable {
     handleStartBtn() {
         const nodes = this.table.childNodes;
         const size = nodes.length;
+        let sessionToLoad = null;
         for (let i = 1; i < size; ++i) {
             if (nodes[i].childNodes[0].childNodes[0].checked) {
-                console.log(STORAGE.sessions[i-1])
-                return STORAGE.sessions[i-1]; 
+                sessionToLoad = STORAGE.sessions[i-1]; 
+                break;
             }
         }
-        return null;
+        // TODO save session to load in SESSION
+        console.log(sessionToLoad);
+        return true;
     }
 }
