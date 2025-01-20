@@ -1,3 +1,25 @@
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+}
+   
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(54, 162, 235); 
+    border-radius: 10px;
+}
+  
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #008CBA; 
+}
+
 input[type=text], select {
     width: 100%;
     padding: 10px 15px;
@@ -13,4 +35,71 @@ input[type=text], select {
     flex-flow: row wrap;
     justify-content: center;
     gap: 10px;
+}
+
+#survey {
+    margin: 10px 28px 0 28px;
+    padding-bottom: 28px;
+}
+
+.survey-title {
+    font-family: Georgia, serif;
+}
+
+.survey-desc {
+    text-align: justify;
+    margin-bottom: 8px;
+}
+
+.cat-title {
+    font-family: Georgia, serif;
+    padding: 8px;
+    color: rgb(255, 33, 81);
+}
+
+.cat-desc {
+    text-align: justify;
+    border: solid 2px #008CBA;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: rgb(193, 230, 255);
+}
+
+.cat-desc > span {
+    font-weight: 700;
+}
+
+.q {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 25px 90px 32px auto;
+    grid-template-rows: auto;
+    gap: 5px;
+    margin-top: 12px;
+    text-align: justify;
+}
+
+.qn {
+    width: 25px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.q-answer {
+    max-height: 30px;
+    padding: 5px 7px;
+    width: 90px;
+}
+
+.comment {
+    max-height: 30px;
+    background-color: rgb(193, 230, 255);
+    border: solid 1px #008CBA;
+    border-radius: 5px;
+    cursor: pointer;
+    color: rgb(255, 33, 81);
+}
+
+.qq {
+    align-self: center;
 }
