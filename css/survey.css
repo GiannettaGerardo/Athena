@@ -35,10 +35,11 @@ input[type=text], select {
     flex-flow: row wrap;
     justify-content: center;
     gap: 10px;
+    margin-bottom: 20px;
 }
 
 #survey {
-    margin: 10px 28px 0 28px;
+    margin: 20px 28px 0 28px;
     padding-bottom: 28px;
 }
 
@@ -77,6 +78,10 @@ input[type=text], select {
     gap: 5px;
     margin-top: 12px;
     text-align: justify;
+}
+.q:hover {
+    background-color: rgb(230, 230, 230);
+    border-radius: 5px;
 }
 
 .qn {
