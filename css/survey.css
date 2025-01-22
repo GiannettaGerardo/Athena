@@ -52,6 +52,10 @@ input[type=text], select {
     margin-bottom: 8px;
 }
 
+.cat-container {
+    margin-bottom: 10px;
+}
+
 .cat-title {
     font-family: Georgia, serif;
     padding: 8px;
@@ -73,7 +77,7 @@ input[type=text], select {
 .q {
     width: 100%;
     display: grid;
-    grid-template-columns: 25px 90px 32px auto;
+    grid-template-columns: 25px 90px 28px auto;
     grid-template-rows: auto;
     gap: 5px;
     margin-top: 12px;
@@ -96,15 +100,27 @@ input[type=text], select {
     width: 90px;
 }
 
-.comment {
-    max-height: 30px;
+.comment-btn {
+    max-height: 27px;
     background-color: rgb(193, 230, 255);
     border: solid 1px #008CBA;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
-    color: rgb(255, 33, 81);
+    color: #008CBA;
 }
 
-.qq {
+.comment-btn.active {
+    background-color: rgb(255, 187, 202);
+    color: rgb(188, 0, 41);
+    border-color: rgb(188, 0, 41);
+}
+
+.comment {
+    grid-row: 2; 
+    grid-column: 3 / span 2;
+    visibility: visible;
+}
+
+.q-text {
     align-self: center;
 }
