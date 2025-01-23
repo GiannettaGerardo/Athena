@@ -2,7 +2,7 @@ export default class Stepper {
     #stepper;
     #currentIdx;
 
-    constructor(elements) {
+    constructor(elements, resolveClickCallback) {
         this.#stepper = document.getElementById('stepper');
         if (! this.#stepper.classList.contains('progressBar')) {
             this.#stepper.setAttribute('class', 'progressBar');
@@ -20,14 +20,16 @@ export default class Stepper {
             else {
                 li.setAttribute('class', 'not-complete');
             }
-            li.addEventListener('click', (ev) => {this.#switchActive(ev.target)});
+            li.addEventListener('click', (ev) => {this.#switchActive(ev.target, resolveClickCallback)});
             this.#stepper.appendChild(li);
         }
     }
 
-    #switchActive(target) {
+    #switchActive(target, resolveClickCallback) {
         const nodes = this.#stepper.childNodes;
         const size = nodes.length;
+        // if click the same step that is already clicked
+        if (this.#isTargetAlreadyActive(nodes, target)) return;
         for (let i = 0; i < size; ++i) {
             if (nodes[i] === target) {
                 nodes[i].setAttribute('class', 'active not-complete');
@@ -35,7 +37,18 @@ export default class Stepper {
                 continue;
             }
             nodes[i].setAttribute('class', 'not-complete');
-        } 
+        }
+        resolveClickCallback(this.#currentIdx);
+    }
+
+    #isTargetAlreadyActive(nodes, target) {
+        const size = nodes.length;
+        for (let i = 0; i < size; ++i) {
+            if (nodes[i] === target) {
+                return i === this.#currentIdx;
+            }
+        }
+        return false;
     }
     
     next() {

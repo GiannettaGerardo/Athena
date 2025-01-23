@@ -2,6 +2,7 @@ import { CONFIG } from './config.js';
 import { STORAGE, SESSION } from './store.js';
 import Stepper from './stepper.js'; 
 import { SurveyContext } from './context.js';
+import { _C } from './utils.js';
 
 const ANSWERS = [['-1', ''], ['0', 'No'], ['0.5', 'Partial'], ['1', 'Yes']];
 const contextBtn = document.getElementById('context-btn');
@@ -22,32 +23,35 @@ function initialize() {
     const surveys = SESSION.getSurveys();
     if (surveys?.length !== 0) {
         setContextBtn();
-        stepper = new Stepper(surveys);
+        stepper = new Stepper(surveys, switchSurvey);
         surveysContext = new Array(surveys.length);
         for (let i = 0; i < surveys.length; ++i) {
             surveysContext[i] = new SurveyContext(STORAGE.surveys[i]);
         }
-        createSurveyByStepper();
+        createSurvey(0);
     } else {
         window.location.href = CONFIG.homeURL;
     }
 }
 
-function createSurveyByStepper() {
-    const index = stepper.getCurrentIndex();
+function switchSurvey(surveyIdx) {
+    // clear the survey container
+    while (survey.hasChildNodes()) {
+        survey.removeChild(survey.lastChild);
+    }
+    // create the new survey
+    createSurvey(surveyIdx);
+}
+
+function createSurvey(index) {
+    //const index = stepper.getCurrentIndex();
     const surveys = STORAGE.surveys;
     if (index < 0 || index >= surveys.length) return;
     // append title
-    const title = document.createElement('h1');
-    title.setAttribute('class', 'survey-title');
-    title.innerText = surveys[index].id;
-    survey.appendChild(title);
+    survey.appendChild(_C('h1', surveys[index].id, 'survey-title'));
     // append description (optional)
     if (surveys[index].description?.trim().length !== 0) {
-        const desc = document.createElement('div');
-        desc.setAttribute('class', 'survey-desc');
-        desc.innerText = surveys[index].description;
-        survey.appendChild(desc);
+        survey.appendChild(_C('div', surveys[index].description, 'survey-desc'));
     }
     // append categories
     createCategories(surveys[index]);
@@ -58,27 +62,19 @@ function createCategories(surveyNode) {
     const size = categories.length;
     for (let i = 0; i < size; ++i) {
         // append category container to the survey
-        const categoryContainer = document.createElement('div');
+        
+        const categoryContainer = _C('div', null, 'cat-container');
         categoryContainer.setAttribute('key', i);
-        categoryContainer.setAttribute('class', 'cat-container');
         survey.appendChild(categoryContainer);
 
         // append category title
-        const title = document.createElement('h2');
-        title.setAttribute('class', 'cat-title');
-        title.innerText = `${i+1}. ${categories[i].name}`;
-        categoryContainer.appendChild(title);
+        categoryContainer.appendChild(_C('h2', `${i+1}. ${categories[i].name}`, 'cat-title'));
         
         // append category description (optional)
         if (categories[i].description?.trim().length !== 0) {
-            const catDesc = document.createElement('div');
-            catDesc.setAttribute('class', 'cat-desc');
-            const span = document.createElement('span');
-            span.innerHTML = 'Description';
-            catDesc.appendChild(span);
-            const divDesc = document.createElement('div');
-            divDesc.innerText = categories[i].description;
-            catDesc.appendChild(divDesc);
+            const catDesc = _C('div', null, 'cat-desc');
+            catDesc.appendChild(_C('span', 'Description'));
+            catDesc.appendChild(_C('div', categories[i].description));
             categoryContainer.appendChild(catDesc);
 
             createQuestions(categoryContainer, categories[i]);
@@ -91,48 +87,49 @@ function createQuestions(container, category) {
     const size = questions.length;
     for (let i = 0; i < size; ++i) { 
         // append question container to the category container
-        const questionContainer = document.createElement('div');
+        const questionContainer = _C('div', null, 'q');
         questionContainer.setAttribute('key', i);
-        questionContainer.setAttribute('class', 'q');
         container.appendChild(questionContainer);
         // append question number
-        const qNumber = document.createElement('span');
-        qNumber.setAttribute('class', 'qn');
-        qNumber.innerText = `${i+1}.`;
-        questionContainer.appendChild(qNumber);
+        questionContainer.appendChild(_C('span', `${i+1}.`, 'qn'));
         // append questions answers
-        questionContainer.appendChild(createAndGetAnswers());
+        questionContainer.appendChild(createAndGetAnswers(questionContainer));
         // append question comment button
-        questionContainer.appendChild(createAndGetCommentBtn());
+        const commentButton = createAndGetCommentBtn();
+        questionContainer.appendChild(commentButton);
         // append question text
-        const qText = document.createElement('span');
-        qText.setAttribute('class', 'q-text');
-        qText.innerText = questions[i].q;
-        questionContainer.appendChild(qText);
+        questionContainer.appendChild(_C('span', questions[i].q, 'q-text'));
+        // activate the comment button and show the comment if any
+        openCommentIfAny(questionContainer, commentButton);
     }   
 }
 
-function createAndGetAnswers() {
-    const qAnswers = document.createElement('select');
-    qAnswers.setAttribute('class', 'q-answer');
-    
+function createAndGetAnswers(container) {
+    const qAnswers = _C('select', null, 'q-answer');
     for (const answ of ANSWERS) {
-        const opt = document.createElement('option');
+        const opt = _C('option', answ[1]);
         opt.value = answ[0];
-        opt.innerText = answ[1];
         qAnswers.appendChild(opt);
     }
-
+    // add the previous answer if any
+    const qI = container.getAttribute('key');
+    const cI = container.parentElement.getAttribute('key');
+    qAnswers.value = surveysContext[stepper.getCurrentIndex()].answers[cI][qI];
+    // handle answer selection
+    qAnswers.addEventListener('change', (ev) => {
+        const q = ev.target.parentElement;
+        const qIdx = q.getAttribute('key');
+        const cIdx = q.parentElement.getAttribute('key');
+        const n = Number.parseFloat(ev.target.options[ev.target.selectedIndex].value);
+        surveysContext[stepper.getCurrentIndex()].answers[cIdx][qIdx] = n;
+    })
     return qAnswers;
 }
 
 function createAndGetCommentBtn() {
-    const commentBtn = document.createElement('button');
-    commentBtn.setAttribute('class', 'comment-btn');
-    const icon = document.createElement('i');
+    const commentBtn = _C('button', null, 'comment-btn');
+    const icon = _C('i', 'description', 'material-icons');
     icon.style.fontSize = '15px';
-    icon.setAttribute('class', 'material-icons');
-    icon.innerText = 'description';
     commentBtn.appendChild(icon);
     commentBtn.addEventListener('click', handleCommentInput);
     return commentBtn;
@@ -141,30 +138,47 @@ function createAndGetCommentBtn() {
 function handleCommentInput(ev) {
     const commentBtn = ev.currentTarget;
     const qDiv = commentBtn.parentElement;
-    if (!qDiv) return;
-    const qCat = qDiv.parentElement;
-    if (!qCat) return;
+    const qIdx = qDiv.getAttribute('key');
+    const cIdx = qDiv.parentElement.getAttribute('key');
+    const commentStr = surveysContext[stepper.getCurrentIndex()].comments[cIdx][qIdx];
     // if comment button isn't clicked
     if (qDiv.lastChild.nodeName !== 'INPUT') {
-        const qIdx = Number.parseInt(qDiv.getAttribute('key'));
-        if (Number.isNaN(qIdx) || qIdx < 0) return;
-        const cIdx = Number.parseInt(qCat.getAttribute('key'));
-        if (Number.isNaN(cIdx) || cIdx < 0) return;
-        // change button style when clicked
-        commentBtn.setAttribute('class', 'comment-btn active');
-        // add input comment
-        const input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('class', 'comment');
-        input.placeholder = 'Enter a note...';
-        input.innerText = surveysContext[stepper.getCurrentIndex()].comments[cIdx][qIdx];
-        qDiv.appendChild(input);
+        createCommentInput(qDiv, commentBtn, commentStr);
     }
     // if comment button is clicked
     else {
         // change button style when clicked
-        commentBtn.setAttribute('class', 'comment-btn');
+        commentBtn.setAttribute('class', commentStr ? 'comment-btn filled' : 'comment-btn');
         // remove input comment
         qDiv.removeChild(qDiv.lastChild);
     }   
+}
+
+function changeComment(ev) {
+    const q = ev.target.parentElement;
+    const qIdx = q.getAttribute('key');
+    const cIdx = q.parentElement.getAttribute('key');
+    surveysContext[stepper.getCurrentIndex()].comments[cIdx][qIdx] = ev.target.value;
+}
+
+function openCommentIfAny(qContainer, commentBtn) {
+    const cContainer = qContainer.parentElement;
+    const qIdx = qContainer.getAttribute('key');
+    const cIdx = cContainer.getAttribute('key');
+    const comment = surveysContext[stepper.getCurrentIndex()].comments[cIdx][qIdx];
+    if (comment) {
+        createCommentInput(qContainer, commentBtn, comment);
+    }
+}
+
+function createCommentInput(qContainer, commentBtn, commentStr) {
+    // change button style when clicked
+    commentBtn.setAttribute('class', 'comment-btn active');
+    // add input comment
+    const input = _C('input', null, 'comment');
+    input.value = commentStr;
+    input.setAttribute('type', 'text');
+    input.placeholder = 'Enter a note...';
+    input.addEventListener('input', changeComment);
+    qContainer.appendChild(input);
 }

@@ -9,3 +9,14 @@ export function enableBtn(btn) {
     btn.style.opacity = '1';
     btn.style.cursor = 'pointer';
 }
+
+export function _C(elementName, innerText, classString) {
+    const el = document.createElement(elementName);
+    if (classString) {
+        el.setAttribute('class', classString);
+    }
+    if (innerText) {
+        el.innerText = innerText;
+    }
+    return el;
+}

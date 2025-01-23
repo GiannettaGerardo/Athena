@@ -109,6 +109,10 @@ input[type=text], select {
     color: #008CBA;
 }
 
+.comment-btn.filled {
+    background-color: rgb(255, 187, 202);
+}
+
 .comment-btn.active {
     background-color: rgb(255, 187, 202);
     color: rgb(188, 0, 41);
