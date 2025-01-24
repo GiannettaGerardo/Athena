@@ -16,4 +16,12 @@ export class SurveyContext {
         }
     }
 
+    validateAnswers() {
+        for (const catList of this.answers) {
+            for (const ans of catList) {
+                if (ans < 0) return false;
+            }
+        }
+        return true;
+    }
 }

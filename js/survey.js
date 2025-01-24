@@ -23,15 +23,19 @@ function initialize() {
     const surveys = SESSION.getSurveys();
     if (surveys?.length !== 0) {
         setContextBtn();
-        stepper = new Stepper(surveys, switchSurvey);
         surveysContext = new Array(surveys.length);
         for (let i = 0; i < surveys.length; ++i) {
             surveysContext[i] = new SurveyContext(STORAGE.surveys[i]);
         }
+        stepper = new Stepper(surveys, areAnswersCompletedForSurvey, switchSurvey);
         createSurvey(0);
     } else {
         window.location.href = CONFIG.homeURL;
     }
+}
+
+function areAnswersCompletedForSurvey(idx) {
+    return surveysContext[idx].validateAnswers();
 }
 
 function switchSurvey(surveyIdx) {
@@ -114,7 +118,11 @@ function createAndGetAnswers(container) {
     // add the previous answer if any
     const qI = container.getAttribute('key');
     const cI = container.parentElement.getAttribute('key');
-    qAnswers.value = surveysContext[stepper.getCurrentIndex()].answers[cI][qI];
+    const answer = surveysContext[stepper.getCurrentIndex()].answers[cI][qI];
+    qAnswers.value = answer;
+    if (answer !== -1) {
+        qAnswers.style.backgroundColor = 'rgb(255, 222, 229)';
+    }
     // handle answer selection
     qAnswers.addEventListener('change', (ev) => {
         const q = ev.target.parentElement;
@@ -122,6 +130,10 @@ function createAndGetAnswers(container) {
         const cIdx = q.parentElement.getAttribute('key');
         const n = Number.parseFloat(ev.target.options[ev.target.selectedIndex].value);
         surveysContext[stepper.getCurrentIndex()].answers[cIdx][qIdx] = n;
+
+        ev.target.style.backgroundColor = n !== -1 ? 'rgb(255, 222, 229)' : null;
+        // complete or not the current step in the stepper
+        stepper.handleStepCompletion(areAnswersCompletedForSurvey(stepper.getCurrentIndex()));
     })
     return qAnswers;
 }

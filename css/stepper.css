@@ -18,7 +18,7 @@
     border-radius: 50%;
     width: 30px;
     height: 30px;
-    border: 1px solid #ddd;
+    border: 1px solid grey;
     display: block;
     text-align: center;
     margin: 0 auto 3px;
@@ -42,19 +42,14 @@
     content: none;
 }
 
-.progressBar li.active {
-    color: rgb(54, 162, 235);
-}
-
-.progressBar li.active:before {
-    border-color: rgb(54, 162, 235);
-    background-color: rgb(54, 162, 235)
-}
-
-.progressBar li.active+li:after {
+.progressBar li.not-complete+li:after {
     background-color: rgb(54, 162, 235);
 }
 
-.progressBar li.not-complete:before {
+.progressBar li.active:before {
     border: solid 2px rgb(255, 33, 81);
+}
+
+.progressBar li.complete:before {
+    background-color: rgb(54, 162, 235);
 }

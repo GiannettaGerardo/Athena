@@ -1,66 +1,53 @@
 export default class Stepper {
     #stepper;
     #currentIdx;
+    #isStepCompleteCallback;
+    #resolveClickCallback;
 
-    constructor(elements, resolveClickCallback) {
+    constructor(elements, isStepCompleteCallback, resolveClickCallback) {
         this.#stepper = document.getElementById('stepper');
         if (! this.#stepper.classList.contains('progressBar')) {
             this.#stepper.setAttribute('class', 'progressBar');
         }
         this.#currentIdx = 0;
+        this.#resolveClickCallback = resolveClickCallback;
+        this.#isStepCompleteCallback = isStepCompleteCallback;
 
-        let first = true;
-        for (const element of elements) {
+        const size = elements.length;
+        for (let i = 0; i < size; ++i) {
             const li = document.createElement('li');
-            li.innerText = element;
-            if (first) {
-                li.setAttribute('class', 'active not-complete');
-                first = false;
+            li.innerText = elements[i];
+            li.setAttribute('key', i);
+            const isStepComplete = this.#isStepCompleteCallback(i);
+            if (i === 0) {
+                li.setAttribute('class', isStepComplete ? 'active complete' : 'active not-complete');
             }
             else {
-                li.setAttribute('class', 'not-complete');
+                li.setAttribute('class', isStepComplete ? 'active complete' : 'not-complete');
             }
-            li.addEventListener('click', (ev) => {this.#switchActive(ev.target, resolveClickCallback)});
+            li.addEventListener('click', (ev) => {this.#switchActive(ev.target)});
             this.#stepper.appendChild(li);
         }
     }
 
-    #switchActive(target, resolveClickCallback) {
-        const nodes = this.#stepper.childNodes;
-        const size = nodes.length;
+    #switchActive(target) {
+        const targetKey = Number.parseInt(target.getAttribute('key'));
         // if click the same step that is already clicked
-        if (this.#isTargetAlreadyActive(nodes, target)) return;
-        for (let i = 0; i < size; ++i) {
-            if (nodes[i] === target) {
-                nodes[i].setAttribute('class', 'active not-complete');
-                this.#currentIdx = i;
-                continue;
-            }
-            nodes[i].setAttribute('class', 'not-complete');
-        }
-        resolveClickCallback(this.#currentIdx);
-    }
+        if (targetKey === this.#currentIdx) return;
+        
+        const targetStepClass = target.getAttribute('class');
+        const actualStep = this.#stepper.childNodes[this.#currentIdx];
+        const actualStepClass = actualStep.getAttribute('class');
+        actualStep.setAttribute('class', (actualStepClass === 'active complete') ? 'complete' : 'not-complete');
+        target.setAttribute('class', (targetStepClass === 'complete') ? 'active complete' : 'active not-complete');
+        this.#currentIdx = targetKey;
 
-    #isTargetAlreadyActive(nodes, target) {
-        const size = nodes.length;
-        for (let i = 0; i < size; ++i) {
-            if (nodes[i] === target) {
-                return i === this.#currentIdx;
-            }
-        }
-        return false;
+        this.#resolveClickCallback(this.#currentIdx);
     }
     
-    next() {
-        const nodes = this.#stepper.childNodes;
-        if (this.#currentIdx >= nodes.length) {
-            return false;
-        }
-        nodes[this.#currentIdx++].setAttribute('class', 'active');
-        if (this.#currentIdx < nodes.length) {
-            nodes[this.#currentIdx].setAttribute('class', 'not-complete');
-        }
-        return true;
+    handleStepCompletion(isStepComplete) {
+        const actualStep = this.#stepper.childNodes[this.#currentIdx];
+        actualStep.setAttribute('class', isStepComplete ? 'active complete' : 'active not-complete');
     }
 
     getCurrentIndex() {
